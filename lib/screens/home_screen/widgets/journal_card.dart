@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webapi_first_course/helpers/weekday.dart';
 import 'package:flutter_webapi_first_course/models/journal.dart';
+import 'package:uuid/uuid.dart';
 
 class JournalCard extends StatelessWidget {
   final Journal? journal;
   final DateTime showedDate;
+
   const JournalCard({Key? key, this.journal, required this.showedDate})
       : super(key: key);
 
@@ -79,7 +81,24 @@ class JournalCard extends StatelessWidget {
       );
     } else {
       return InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            'add-journal',
+            arguments: Journal(
+              id: const Uuid().v1(),
+              content: "",
+              createdAt: showedDate,
+              updatedAt: showedDate,
+            ),
+          ).then((value) {
+            if (value != null && value == true) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Registro feito com sucesso!'))
+              );
+            }
+          });
+        },
         child: Container(
           height: 115,
           alignment: Alignment.center,
