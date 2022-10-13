@@ -4,7 +4,7 @@ asyncStudy() {
   //execucaoNormal();
   //assincronismoBasico();
   //usandoFuncoesAssincronas();
-  esperandoFuncoesAssincronas();
+  //esperandoFuncoesAssincronas();
 }
 
 void execucaoNormal() {
@@ -20,7 +20,7 @@ void assincronismoBasico() {
   print("\nAssincronismo Básico");
   print("01");
   print("02");
-  Future.delayed(Duration(seconds: 2), () {
+  Future.delayed(const Duration(seconds: 2), () {
     print("03");
   });
   print("04");
