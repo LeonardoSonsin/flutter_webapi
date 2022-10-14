@@ -6,13 +6,15 @@ import '../../models/journal.dart';
 
 class AddJournalScreen extends StatelessWidget {
   final Journal journal;
+  final bool isEditing;
 
-  AddJournalScreen({Key? key, required this.journal}) : super(key: key);
+  AddJournalScreen({Key? key, required this.journal, required this.isEditing}) : super(key: key);
 
   final TextEditingController _contentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    _contentController.text = journal.content;
     return Scaffold(
       appBar: AppBar(
         title: Text(WeekDay(journal.createdAt).toString()),
@@ -45,8 +47,15 @@ class AddJournalScreen extends StatelessWidget {
     journal.content = content;
 
     JournalService service = JournalService();
-    service.register(journal).then((value) {
-      Navigator.pop(context, value);
-    });
+    if(isEditing){
+      service.register(journal).then((value) {
+        Navigator.pop(context, value);
+      });
+    } else {
+      service.edit(journal.id, journal).then((value) {
+        Navigator.pop(context, value);
+      });
+    }
+
   }
 }
