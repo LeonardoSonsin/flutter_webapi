@@ -1,5 +1,21 @@
 {
-  "users": [],
+  "users": [
+    {
+      "email": "leonardo@gmail.com",
+      "password": "$2a$10$NxfmKgJ6fB/usO469Gc.COKUzn75P21xyvJx56HH.W210i5Hzmvca",
+      "id": 1
+    },
+    {
+      "email": "teste@gmail.com",
+      "password": "$2a$10$EAnDGd99J4ZdbmS4JlNxd.dC4tYGywe9ahBx2eTZhwfwCVrqkcmKa",
+      "id": 2
+    },
+    {
+      "email": "teste2@gmail.com",
+      "password": "$2a$10$tCkLNg56xA7Y2l.M7B1gwOuZ4lRo2mHXh2bLTHIGPXrEI8zVMOt0y",
+      "id": 3
+    }
+  ],
   "learnhttp": {},
   "journals": []
 }
