@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webapi_first_course/screens/home_screen/widgets/home_screen_list.dart';
 import 'package:flutter_webapi_first_course/services/journal_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/journal.dart';
 
@@ -25,6 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   JournalService service = JournalService();
 
+  int? userId;
+  String? userToken;
+
   @override
   void initState() {
     refresh();
@@ -47,25 +51,71 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.refresh))
         ],
       ),
-      body: ListView(
-        controller: _listScrollController,
-        children: generateListJournalCards(
-          windowPage: windowPage,
-          currentDay: currentDay,
-          database: database,
-          refresh: refresh,
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              onTap: () {
+                logout();
+              },
+              title: const Text("Sair"),
+              leading: const Icon(Icons.logout),
+            ),
+          ],
         ),
       ),
+      body: (userId != null && userToken != null)
+          ? ListView(
+              controller: _listScrollController,
+              children: generateListJournalCards(
+                  userId: userId!,
+                  windowPage: windowPage,
+                  currentDay: currentDay,
+                  database: database,
+                  refresh: refresh,
+                  token: userToken!),
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 
-  void refresh() async {
-    List<Journal> listJournal = await service.getAll();
-    setState(() {
-      database = {};
-      for (Journal journal in listJournal) {
-        database[journal.id] = journal;
-      }
+  void refresh() {
+    SharedPreferences.getInstance().then(
+      (prefs) {
+        String? token = prefs.getString("accessToken");
+        String? email = prefs.getString("email");
+        int? id = prefs.getInt("id");
+
+        if (token != null && email != null && id != null) {
+          setState(() {
+            userId = id;
+            userToken = token;
+          });
+          service
+              .getAll(id: id.toString(), token: token)
+              .then((List<Journal> listJournal) {
+            setState(
+              () {
+                database = {};
+                for (Journal journal in listJournal) {
+                  database[journal.id] = journal;
+                }
+              },
+            );
+          });
+        } else {
+          Navigator.pushReplacementNamed(context, 'login');
+        }
+      },
+    );
+  }
+
+  void logout() {
+    SharedPreferences.getInstance().then((preferences) {
+      preferences.clear();
+      Navigator.pushReplacementNamed(context, "login");
     });
   }
 }
